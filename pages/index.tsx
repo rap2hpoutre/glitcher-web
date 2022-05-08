@@ -1,6 +1,7 @@
 import Header from "../components/Header";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { useState } from "react";
+import Modal, { ModalButton } from "../components/Modal";
 
 const ffmpeg = createFFmpeg({
   log: true,
@@ -8,8 +9,11 @@ const ffmpeg = createFFmpeg({
 });
 
 export default function Home() {
-  const [originalSrc, setOriginalSrc] = useState<string | undefined>(undefined);
-  const [convertedSrc, setConvertedSrc] = useState<string | undefined>(undefined);
+  const [originalSrc, setOriginalSrc] = useState<string | undefined>();
+  const [convertedSrc, setConvertedSrc] = useState<string | undefined>();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [duration, setDuration] = useState<number | undefined>();
+  const [srcForDuration, setSrcForDuration] = useState<string | undefined>();
   const [message, setMessage] = useState("Click Start to transcode");
 
   async function onUploadFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -67,6 +71,20 @@ export default function Home() {
     );
   }
 
+  function onBeforeUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target?.files?.[0];
+    if (file) {
+      setMessage("Uploading file...");
+      setSrcForDuration(URL.createObjectURL(file));
+      const audioElement = document.getElementById("hidden-audio-for-duration") as HTMLAudioElement;
+      if (audioElement) {
+        audioElement.addEventListener("loadedmetadata", (event) => {
+          setDuration((event.target as HTMLAudioElement)?.duration);
+        });
+      }
+    }
+  }
+
   return (
     <div>
       <Header link="about" />
@@ -76,7 +94,7 @@ export default function Home() {
           The sample must be a WAV file, short and trimmed. You have to know its bpm or the number
           of bars. Beat per bar must be 4.
         </p>
-        <input type="file" onChange={onUploadFile} />
+        <input type="file" onChange={onBeforeUpload} />
         <button onClick={onRequestExample}>Essayer un exemple au hasard</button>
         <div>{message}</div>
         <div className="grid grid-cols-2">
@@ -91,7 +109,15 @@ export default function Home() {
             <button onClick={() => download("converted.wav")}>Download</button>
           </div>
         </div>
+        <audio className="hidden" id="hidden-audio-for-duration" src={srcForDuration}></audio>
       </div>
+      {modalOpen ? (
+        <Modal
+          content={<>hello</>}
+          title={<div>dhsj</div>}
+          buttons={<ModalButton onClick={() => {}} text="ok" />}
+        />
+      ) : null}
     </div>
   );
 }
