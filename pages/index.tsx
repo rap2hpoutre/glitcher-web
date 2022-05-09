@@ -1,12 +1,8 @@
 import Header from "../components/Header";
-import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
-import { useState } from "react";
+import { fetchFile, ffmpeg } from "../utils/helpers";
+import { useEffect, useMemo, useState } from "react";
 import Modal, { ModalButton } from "../components/Modal";
-
-const ffmpeg = createFFmpeg({
-  log: true,
-  corePath: "ffmpeg-core/ffmpeg-core.js",
-});
+import BpmOrBarsSelector from "../components/BpmBarsSelector";
 
 export default function Home() {
   const [originalSrc, setOriginalSrc] = useState<string | undefined>();
@@ -16,6 +12,7 @@ export default function Home() {
   const [srcForDuration, setSrcForDuration] = useState<string | undefined>();
   const [message, setMessage] = useState("Click Start to transcode");
 
+  /*
   async function onUploadFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target?.files?.[0];
     if (file) {
@@ -24,6 +21,7 @@ export default function Home() {
       await transform();
     }
   }
+  */
 
   async function onRequestExample() {
     await prepare();
@@ -80,8 +78,17 @@ export default function Home() {
       if (audioElement) {
         audioElement.addEventListener("loadedmetadata", (event) => {
           setDuration((event.target as HTMLAudioElement)?.duration);
+          setModalOpen(true);
         });
       }
+    }
+  }
+
+  async function onUploadCrashTest() {
+    if (srcForDuration) {
+      await prepare();
+      ffmpeg.FS("writeFile", "original.wav", await fetchFile(srcForDuration));
+      await transform();
     }
   }
 
@@ -94,7 +101,11 @@ export default function Home() {
           The sample must be a WAV file, short and trimmed. You have to know its bpm or the number
           of bars. Beat per bar must be 4.
         </p>
-        <input type="file" onChange={onBeforeUpload} />
+        <label className="block text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-64">
+          <input type="file" className="hidden" onChange={onBeforeUpload} key={srcForDuration} />
+          Upload a WAV file
+        </label>
+
         <button onClick={onRequestExample}>Essayer un exemple au hasard</button>
         <div>{message}</div>
         <div className="grid grid-cols-2">
@@ -111,11 +122,17 @@ export default function Home() {
         </div>
         <audio className="hidden" id="hidden-audio-for-duration" src={srcForDuration}></audio>
       </div>
-      {modalOpen ? (
-        <Modal
-          content={<>hello</>}
-          title={<div>dhsj</div>}
-          buttons={<ModalButton onClick={() => {}} text="ok" />}
+      {modalOpen && duration ? (
+        <BpmOrBarsSelector
+          duration={duration}
+          onCancel={() => {
+            setModalOpen(false);
+            setSrcForDuration(undefined);
+          }}
+          onConfirm={() => {
+            setModalOpen(false);
+            onUploadCrashTest();
+          }}
         />
       ) : null}
     </div>
