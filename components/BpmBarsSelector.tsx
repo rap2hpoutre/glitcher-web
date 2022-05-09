@@ -25,7 +25,7 @@ export default function BpmOrBarsSelector({
     let currentBpm = 60 / currentBeatDuration;
     if (currentBeatDuration < maxBeatDuration) throw new Error("Can not parse this duration");
     while (currentBeatDuration > minBeatDuration) {
-      currentBarCount++;
+      currentBarCount *= 2;
       currentBeatDuration /= 2;
       currentBpm = 60 / currentBeatDuration;
     }
@@ -65,8 +65,8 @@ export default function BpmOrBarsSelector({
       buttons={<ButtonOrError bpm={bpm} onConfirm={() => onConfirm(beatDuration!, barCount!)} />}
       content={
         <div>
-          <div className="flex flex-row">
-            <div className="flex-auto">
+          <div>
+            <div>
               <label className="flex flex-row items-center">
                 <input
                   type="radio"
@@ -77,10 +77,10 @@ export default function BpmOrBarsSelector({
                     setBpmOrBars(e.target.value);
                   }}
                 />
-                <span className="flex-auto">Bars</span>
+                <span className="flex-auto ml-2">Bars</span>
               </label>
             </div>
-            <div className="flex-auto">
+            <div>
               <label className="flex flex-row items-center">
                 <input
                   type="radio"
@@ -91,44 +91,52 @@ export default function BpmOrBarsSelector({
                     setBpmOrBars(e.target.value);
                   }}
                 />
-                <span className="flex-auto">BPM</span>
+                <span className="flex-auto ml-2">BPM</span>
               </label>
             </div>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col my-4">
             {bpmOrBars === "bpm" ? (
               <div className="flex flex-col">
-                <label className="flex flex-row items-center">
-                  <span className="flex-auto">BPM</span>
+                <label className="flex flex-col">
+                  <span className="flex-auto text-sm font-semibold">BPM (beats per minute)</span>
                   <input
-                    type="text"
+                    type="number"
+                    className="border border-gray-300 rounded-md p-2"
                     value={String(bpm)}
                     onChange={(e) => {
                       setBpm(Number(e.target.value));
                     }}
                   />
                 </label>
-                {Number(bpm) > 110 ? (
-                  <div>
-                    Suggestion is: <b>{Number(bpm)}</b> bpm. Change to <b>{Number(bpm) / 2}</b> for
-                    better result, if you feel like the orignial beat is slow (lo-fi, abstract
-                    hip-hop, etc.)
-                  </div>
-                ) : (
-                  <div>
-                    Suggestion is: <b>{Number(bpm)}</b> bpm. Change to <b>{Number(bpm) * 2}</b> for
-                    better result, if you feel like the orignial beat is fast (jungle, drum and
-                    bass, breakcore, etc.)
-                  </div>
-                )}
+                <div className="text-sm">
+                  {Number(bpm) > 110 ? (
+                    <div>
+                      Suggestion is: <b>{Number(bpm)}</b> bpm.
+                      <br />
+                      Change to <b>{Number(bpm) / 2}</b> for better result, if you feel like the
+                      orignial beat is slow (lo-fi, abstract hip-hop, etc.)
+                    </div>
+                  ) : (
+                    <div>
+                      Suggestion is: <b>{Number(bpm)}</b> bpm.
+                      <br />
+                      Change to <b>{Number(bpm) * 2}</b> for better result, if you feel like the
+                      orignial beat is fast (jungle, drum and bass, breakcore, etc.)
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
-              <div className="flex flex-col">
-                <label className="flex flex-row items-center">
-                  <span className="flex-auto">Bars (each bar has 4 beats)</span>
+              <div className="flex flex-col my-4">
+                <label className="flex flex-col">
+                  <span className="flex-auto text-sm font-semibold">
+                    Bars (each bar has 4 beats)
+                  </span>
                   <input
-                    type="text"
+                    type="number"
                     value={String(barCount)}
+                    className="border border-gray-300 rounded-md p-2"
                     onChange={(e) => {
                       setBarCount(Number(e.target.value));
                     }}
@@ -137,18 +145,19 @@ export default function BpmOrBarsSelector({
               </div>
             )}
           </div>
-
-          <p>
-            BPM and bars are based on duration and classic BPM values. No sample analysis has been
-            performed. The values suggested should not be considered reliable, please double check
-            them.
-          </p>
-          <p>
-            Duration measured in seconds is {duration}. Beat duration is {beatDuration} seconds
-            (initial: {initialBeatDuration}). Note that the sample will be cut up to{" "}
-            {beatDuration / 64} seconds slices to render certain effects, so it is important that
-            your sample is correctly cut, trimmed and sampled.
-          </p>
+          <div className="text-sm text-gray-600 my-3">
+            <p className="my-2">
+              BPM and bars are based on duration and classic BPM values. No sample analysis has been
+              performed. The values suggested should not be considered reliable, please double check
+              them.
+            </p>
+            <p className="my-2">
+              Duration measured in seconds is {duration}. Beat duration is {beatDuration} seconds
+              (initial: {initialBeatDuration}). Note that the sample will be cut up to{" "}
+              {beatDuration / 64} seconds slices to render certain effects, so it is important that
+              your sample is correctly cut, trimmed and sampled.
+            </p>
+          </div>
         </div>
       }
     />
