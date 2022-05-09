@@ -33,11 +33,11 @@ export interface SliceOptions {
 export interface Context {
   wav: string;
   output: string;
-  tmpdir: string;
   barCount: number;
   beatPerBar: number;
   glitchStyle: GlitchStyle;
   totalTime: number;
+  beatLength: number;
 }
 
 export async function slice(options: SliceOptions, ctx: Context): Promise<string> {
@@ -60,7 +60,7 @@ export async function slice(options: SliceOptions, ctx: Context): Promise<string
 }
 
 function lengthToTimeLength(length: Length, ctx: Context): number {
-  return (ctx.totalTime / ctx.barCount / ctx.beatPerBar) * length;
+  return ctx.beatLength * length;
 }
 
 export function filename(name: string, ctx: Context): string {
@@ -196,4 +196,12 @@ export function pickRandom<T>(array: T[]): T {
 
 export function randomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export async function promiseAllSync(promises: Promise<any>[]): Promise<any[]> {
+  let buffer = [];
+  for (const promise of promises) {
+    buffer.push(await promise);
+  }
+  return buffer;
 }

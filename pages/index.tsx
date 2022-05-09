@@ -1,8 +1,8 @@
 import Header from "../components/Header";
 import { fetchFile, ffmpeg } from "../utils/helpers";
 import { useEffect, useMemo, useState } from "react";
-import Modal, { ModalButton } from "../components/Modal";
 import BpmOrBarsSelector from "../components/BpmBarsSelector";
+import { glitch } from "../utils/glitcher";
 
 export default function Home() {
   const [originalSrc, setOriginalSrc] = useState<string | undefined>();
@@ -31,7 +31,7 @@ export default function Home() {
 
   async function prepare() {
     setMessage("Loading ffmpeg-core.js");
-    await ffmpeg.load();
+    if (!ffmpeg.isLoaded()) await ffmpeg.load();
     setMessage("Start transcoding");
   }
 
@@ -84,11 +84,35 @@ export default function Home() {
     }
   }
 
-  async function onUploadCrashTest() {
+  async function onUploadCrashTest({
+    beatLength,
+    barCount,
+  }: {
+    beatLength: number;
+    barCount: number;
+  }) {
     if (srcForDuration) {
       await prepare();
       ffmpeg.FS("writeFile", "original.wav", await fetchFile(srcForDuration));
-      await transform();
+      await glitch({
+        beatLength,
+        barCount,
+        wav: "original.wav",
+        output: "converted.wav",
+        totalTime: duration!,
+      });
+      setMessage("Complete transcoding");
+      setOriginalSrc(
+        URL.createObjectURL(
+          new Blob([ffmpeg.FS("readFile", "original.wav").buffer], { type: "audio/x-wav" })
+        )
+      );
+      setConvertedSrc(
+        URL.createObjectURL(
+          new Blob([ffmpeg.FS("readFile", "converted.wav").buffer], { type: "audio/x-wav" })
+        )
+      );
+      // await transform();
     }
   }
 
@@ -129,9 +153,9 @@ export default function Home() {
             setModalOpen(false);
             setSrcForDuration(undefined);
           }}
-          onConfirm={() => {
+          onConfirm={(beatLength, barCount) => {
             setModalOpen(false);
-            onUploadCrashTest();
+            onUploadCrashTest({ beatLength, barCount });
           }}
         />
       ) : null}
