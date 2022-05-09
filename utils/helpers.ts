@@ -68,7 +68,7 @@ export function filename(name: string, ctx: Context): string {
 }
 
 export function randomFilename(name: string, ctx: Context): string {
-  return filename(`${name}-${crypto.randomBytes(10).toString("hex")}.wav`, ctx);
+  return filename(`${name}-${crypto.randomBytes(10).toString("hex")}`, ctx);
 }
 
 export async function drill(
@@ -143,7 +143,7 @@ export async function timeStretch(
   time: number,
   ctx: Context
 ): Promise<string> {
-  const tmp = await effectFromSlice(options, "timeStretch", [`-af`, `atempo=${1 / time}`], ctx);
+  const tmp = await effectFromSlice(options, "timeStretch", [`-af`, `atempo=0.5,atempo=0.5`], ctx);
   const beatTime = lengthToTimeLength(Length.Beat, ctx);
   const output = filename(`${options.bar}-${options.beat}-${options.length}-timeStretch-cut`, ctx);
   await ffmpeg.run(

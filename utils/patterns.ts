@@ -150,6 +150,8 @@ export async function barDblueGlitchEndOnly(bar: number, ctx: Context): Promise<
   const slices = [];
   for (let i = 0; i < 2; i++) {
     const x = randomNumber(0, 3);
+    slices.push(await timeStretch({ length: Length.Beat, beat: i, bar }, 8, ctx));
+    continue;
     switch (x) {
       case 0:
         slices.push(await robot({ length: Length.Beat, beat: i, bar }, ctx));
