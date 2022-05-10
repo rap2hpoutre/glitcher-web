@@ -68,7 +68,7 @@ export async function glitch({
       if (targetBar === 0) {
         bars.push(await barNormal(bar, ctx));
       } else {
-        const patterns = [barDblueGlitchEndOnly];
+        const patterns = [barDblueGlitch];
         bars.push(await pickRandom(patterns)(bar, ctx));
       }
     } else {

@@ -184,24 +184,10 @@ export function shuffleArray<T>(array: T[]): T[] {
   return newArr;
 }
 
-export function mapTimes<T>(n: number, fn: (i: number) => T): T[] {
-  return Array(n)
-    .fill(0)
-    .map((_, i) => fn(i));
-}
-
 export function pickRandom<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
 }
 
 export function randomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-export async function promiseAllSync(promises: Promise<any>[]): Promise<any[]> {
-  let buffer = [];
-  for (const promise of promises) {
-    buffer.push(await promise);
-  }
-  return buffer;
 }
