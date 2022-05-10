@@ -16,7 +16,6 @@ export default function Home() {
   const [originalSrc, setOriginalSrc] = useState<string | undefined>();
   const [convertedSrc, setConvertedSrc] = useState<string | undefined>();
   const [modalOpen, setModalOpen] = useState(false);
-  const [processing, setProcessing] = useState(false);
   const [processStatus, setProcessStatus] = useState(ProcessStatus.Idle);
   const [duration, setDuration] = useState<number | undefined>();
   const [message, setMessage] = useState("Click Start to transcode");
@@ -71,6 +70,7 @@ export default function Home() {
   }) {
     if (!src) return;
     setMessage("Loading ffmpeg-core.js");
+    console.log(ffmpeg);
     if (!ffmpeg.isLoaded()) await ffmpeg.load();
     setMessage("Start transcoding");
     ffmpeg.FS("writeFile", "original.wav", await fetchFile(src));
@@ -173,13 +173,33 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="mt-8 text-xs text-gray-700 max-w-lg">
+          <div className="mt-16 text-xs text-gray-700 max-w-lg">
             <ul className="list-disc list-inside">
               <li>
                 The sample must be a <u>WAV file</u>, short and trimmed
               </li>
               <li>You have to know its bpm or the number of bars</li>
               <li>Beat per bar must be 4</li>
+              <li>
+                No drum loops? Download samples on{" "}
+                <a
+                  href="https://www.looperman.com/loops/cats/free-drum-loops-samples-sounds-wavs-download"
+                  target="_blank"
+                  className="text-blue-600 hover:underline"
+                  rel="noopener noreferrer"
+                >
+                  looperman.com
+                </a>{" "}
+                or{" "}
+                <a
+                  href="https://freesound.org/browse/tags/drum-loop/"
+                  target="_blank"
+                  className="text-blue-600 hover:underline"
+                  rel="noopener noreferrer"
+                >
+                  freesound.org
+                </a>
+              </li>
             </ul>
           </div>
         </div>
