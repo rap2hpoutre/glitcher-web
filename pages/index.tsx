@@ -84,6 +84,7 @@ export default function Home() {
     setMessage("Complete transcoding");
     setOriginalSrc(fileToObjectUrl("original.wav"));
     setConvertedSrc(fileToObjectUrl("converted.wav"));
+    ffmpeg.exit(); // Trigger error.
     setProcessStatus(ProcessStatus.Finished);
   }
 

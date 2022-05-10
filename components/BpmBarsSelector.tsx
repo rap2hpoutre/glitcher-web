@@ -1,5 +1,3 @@
-import Header from "../components/Header";
-import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { useEffect, useMemo, useState } from "react";
 import Modal, { ModalButton } from "../components/Modal";
 
