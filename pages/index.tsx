@@ -1,5 +1,5 @@
 import Header from "../components/Header";
-import { fetchFile, ffmpeg } from "../utils/helpers";
+import { fetchFile, ffmpeg, pickRandom } from "../utils/helpers";
 import { useState } from "react";
 import BpmOrBarsSelector from "../components/BpmBarsSelector";
 import { glitch } from "../utils/glitcher";
@@ -29,7 +29,13 @@ export default function Home() {
 
   async function onRequestExample() {
     setProcessStatus(ProcessStatus.Processing);
-    processUploadedFile({ beatLength: 0.348837875, barCount: 2, src: "./dl.wav" });
+    const sample = pickRandom([
+      { beatLength: 0.348837875, barCount: 2, src: "./dl.wav" },
+      { beatLength: 0.33333325, barCount: 1, src: "./dl2.wav" },
+      { beatLength: 0.461539125, barCount: 4, src: "./dl3.wav" },
+      { beatLength: 0.3389625625, barCount: 4, src: "./dl4.wav" },
+    ]);
+    processUploadedFile(sample);
   }
 
   async function download(filename: string) {
