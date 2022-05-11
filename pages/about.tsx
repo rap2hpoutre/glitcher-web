@@ -78,6 +78,7 @@ export default function About() {
               <ExternalLink href="mailto:raphaelht@gmail.com" text="raphaelht@gmail.com" />. I would
               be glad to have your feedback!
             </p>
+            <p className="mb-10">Rap2h</p>
           </div>
         </div>
       </div>
