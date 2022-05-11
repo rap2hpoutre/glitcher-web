@@ -179,7 +179,6 @@ export async function barBrokenStart(bar: number, ctx: Context): Promise<string>
       await slice({ length: Length.Beat, beat: 0, bar }, ctx),
       await slice({ length: Length.HalfBeat, beat: 1, bar }, ctx),
       await slice({ length: Length.Beat, beat: 0, bar }, ctx),
-      await slice({ length: Length.HalfBeat, beat: 1, bar }, ctx),
     ],
     randomFilename(`${bar}-bar-Broken-Start`, ctx)
   );

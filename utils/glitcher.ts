@@ -61,6 +61,7 @@ export async function glitch({
           barAphexStairsDown,
           barDrillHardSuperSlice,
           barDblueGlitch,
+          barDblueGlitchEndOnly,
         ];
         bars.push(await pickRandom(patterns)(bar, ctx));
       }
