@@ -179,7 +179,7 @@ export default function Home() {
           </div>
 
           <div className="mt-16 text-xs text-gray-700 max-w-lg">
-            <ul className="list-disc list-outside">
+            <ul className="list-disc list-outside mx-4 md:mx-0">
               <li>
                 The sample must be a <u>WAV file</u>, short and trimmed
               </li>

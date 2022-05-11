@@ -5,7 +5,7 @@ import logo from "../public/logo2.png";
 export default function Header({ link }: { link: "about" | "home" }) {
   return (
     <div className="flex justify-items-stretch border-b px-2 pt-3 pb-2">
-      <div className="flex-auto justify-self-start">
+      <div className="flex-auto justify-self-start ml-3">
         <Link href={"/"}>
           <Image src={logo} alt="logo" />
         </Link>
