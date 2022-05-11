@@ -3,6 +3,7 @@ import { fetchFile, ffmpeg } from "../utils/helpers";
 import { useState } from "react";
 import BpmOrBarsSelector from "../components/BpmBarsSelector";
 import { glitch } from "../utils/glitcher";
+import Link from "next/link";
 
 enum ProcessStatus {
   Idle,
@@ -70,7 +71,11 @@ export default function Home() {
   }) {
     if (!src) return;
     setMessage("Loading ffmpeg-core.js");
-    console.log(ffmpeg);
+
+    // Trigger error, still required to free memory.
+    // I have to wait for new release of ffmpeg-wasm: https://github.com/ffmpegwasm/ffmpeg.wasm/issues/351
+    if (ffmpeg.isLoaded()) ffmpeg.exit();
+
     if (!ffmpeg.isLoaded()) await ffmpeg.load();
     setMessage("Start transcoding");
     ffmpeg.FS("writeFile", "original.wav", await fetchFile(src));
@@ -84,7 +89,6 @@ export default function Home() {
     setMessage("Complete transcoding");
     setOriginalSrc(fileToObjectUrl("original.wav"));
     setConvertedSrc(fileToObjectUrl("converted.wav"));
-    ffmpeg.exit(); // Trigger error.
     setProcessStatus(ProcessStatus.Finished);
   }
 
@@ -93,11 +97,11 @@ export default function Home() {
       <Header link="about" />
 
       <div className="container mx-auto my-5 font-mono">
-        <h1 className="text-xl text-center mt-14">
+        <h1 className="text-xl text-center mt-14 mx-2 md:mx-0">
           Turn a drum loop into <b>breakcore</b>!
         </h1>
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mx-4 md:mx-0">
           <div className="flex flex-row items-center h-32 my-8">
             {processStatus === ProcessStatus.Idle && (
               <label className="block text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-64">
@@ -175,7 +179,7 @@ export default function Home() {
           </div>
 
           <div className="mt-16 text-xs text-gray-700 max-w-lg">
-            <ul className="list-disc list-inside">
+            <ul className="list-disc list-outside">
               <li>
                 The sample must be a <u>WAV file</u>, short and trimmed
               </li>
@@ -200,6 +204,13 @@ export default function Home() {
                 >
                   freesound.org
                 </a>
+              </li>
+              <li>Low level instructions, unsafe functions, your browser may crash</li>
+              <li>
+                <Link href="/about">
+                  <a className="text-blue-600 hover:underline">Learn more</a>
+                </Link>{" "}
+                about this project
               </li>
             </ul>
           </div>
