@@ -16,7 +16,7 @@ export default function Header({ link }: { link: "about" | "home" }) {
         <meta property="og:description" content="A Drum Loop Glitcher made by Rap2h" />
         <meta property="og:image" content="https://glitcher.vercel.app/ds.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:domain" content="dungeon-synth-name-generator.vercel.app" />
+        <meta property="twitter:domain" content="glitcher.vercel.app" />
         <meta property="twitter:url" content="https://glitcher.vercel.app/" />
         <meta name="twitter:title" content="Drum Loop Glitcher" />
         <meta name="twitter:description" content="A Drum Loop Glitcher made by Rap2h" />
