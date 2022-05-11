@@ -22,7 +22,7 @@ export default function About() {
       <Header link="home" />
       <div className="container mx-auto my-5">
         <h1 className="text-xl text-center my-14 mx-2 md:mx-0 font-mono">About Glitcher</h1>
-        <div>
+        <div className="mx-4 md:mx-0">
           <div className="max-w-xl mx-auto">
             <p className="mb-6">
               This project written in{" "}
