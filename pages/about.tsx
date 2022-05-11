@@ -65,8 +65,9 @@ export default function About() {
               <ExternalLink href="https://sonic-pi.net/" text="Sonic PI" /> (demo of the project
               <ExternalLink href="https://youtu.be/pzLlRkVEW68" text="here" />
               ), but it was not that simple since it needed to install the program and then edit the
-              code to change the sample. So I decided to create this simple "online drum loop
-              glitcher" tool in 3 steps (go to site, upload, download, done). Also, I love writing
+              code to change the sample. So I decided to create this simple &quot;online drum loop
+              glitcher&quot; tool in 3 steps (go to site, upload, download, done). Also, I love
+              writing
               <ExternalLink
                 href="https://dungeon-synth-name-generator.vercel.app/"
                 text="procedural generation tools"
