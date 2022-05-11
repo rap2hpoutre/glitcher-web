@@ -42,7 +42,11 @@ export default function About() {
             </p>
             <p className="mb-6">
               <b>The code is open source</b>, you can find it{" "}
-              <ExternalLink href="" text="here (Github)" />. Feel free to contribute! Report any bug{" "}
+              <ExternalLink
+                href="https://github.com/rap2hpoutre/glitcher-web"
+                text="here (Github)"
+              />
+              . Feel free to contribute! Report any bug{" "}
               <ExternalLink href="https://github.com/rap2hpoutre/glitcher-web/issues" text="here" />
               . Please note that the glitch beat generation process is done in the browser, so it
               might be slow and crash often.
