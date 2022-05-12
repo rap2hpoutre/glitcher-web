@@ -35,7 +35,7 @@ export default function Home() {
       { beatLength: 0.461539125, barCount: 4, src: "./dl3.wav" },
       { beatLength: 0.3389625625, barCount: 4, src: "./dl4.wav" },
       { beatLength: 0.342857125, barCount: 2, src: "./dl5.wav" },
-      { beatLength: 0.36363375, barCount: 2, src: "./dl5.wav" },
+      { beatLength: 0.36363375, barCount: 2, src: "./dl6.wav" },
     ]);
     processUploadedFile(sample);
   }
