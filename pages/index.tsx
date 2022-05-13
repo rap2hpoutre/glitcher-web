@@ -19,7 +19,7 @@ export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
   const [processStatus, setProcessStatus] = useState(ProcessStatus.Idle);
   const [duration, setDuration] = useState<number | undefined>();
-  const [message, setMessage] = useState("Click Start to transcode");
+  const [message, setMessage] = useState<React.ReactNode | string>("Click Start to transcode");
 
   function fileToObjectUrl(filename: string) {
     return URL.createObjectURL(
@@ -80,6 +80,16 @@ export default function Home() {
   }) {
     if (!src) return;
     setMessage("Loading ffmpeg-core.js");
+    if (typeof SharedArrayBuffer === "undefined") {
+      setMessage(
+        <div>
+          <p>Your browser is not compatible (SharedArrayBuffer is not supported) 🤯</p>
+          <p>Please use latest version of Firefox, Edge, Chrome or Safari (&gt; 15.2)</p>
+        </div>
+      );
+      setProcessStatus(ProcessStatus.Error);
+      return;
+    }
 
     // Trigger error, still required to free memory.
     // I have to wait for new release of ffmpeg-wasm: https://github.com/ffmpegwasm/ffmpeg.wasm/issues/351
@@ -139,6 +149,9 @@ export default function Home() {
                   ></path>
                 </svg>
               </div>
+            )}
+            {processStatus === ProcessStatus.Error && (
+              <div className="flex flex-row items-center text-red-700">{message}</div>
             )}
             {processStatus === ProcessStatus.Finished && (
               <div>
