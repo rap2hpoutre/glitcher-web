@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import { createFFmpeg } from "@yeliulee/ffmpeg.wasm";
-export { fetchFile } from "@yeliulee/ffmpeg.wasm";
+import { createFFmpeg } from "@rap2hpoutre/ffmpeg.wasm";
+export { fetchFile } from "@rap2hpoutre/ffmpeg.wasm";
 
 export const ffmpeg = createFFmpeg({
   log: true,

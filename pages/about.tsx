@@ -29,8 +29,8 @@ export default function About() {
               <ExternalLink href="https://www.typescriptlang.org/" text="Typescript" /> has been
               made with{" "}
               <ExternalLink href="https://github.com/ffmpegwasm/ffmpeg.wasm" text="ffmpeg-wasm" />{" "}
-              (through a confidential
-              <ExternalLink href="https://github.com/yeliulee/ffmpeg.wasm" text="fork" /> that
+              (through a home-made
+              <ExternalLink href="https://github.com/rap2hpoutre/ffmpeg.wasm" text="fork" /> that
               indirectly fixes a browser crash), using{" "}
               <ExternalLink href="https://fr.reactjs.org/" text="React" /> via{" "}
               <ExternalLink href="https://nextjs.org/" text="NextJS" />. Style is done with{" "}
