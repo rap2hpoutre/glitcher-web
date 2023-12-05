@@ -16,7 +16,10 @@ export default function Home() {
   const [uploadedSrc, setUploadedSrc] = useState<string | undefined>();
   const [originalSrc, setOriginalSrc] = useState<string | undefined>();
   const [convertedSrc, setConvertedSrc] = useState<string | undefined>();
+  const [beatLength, setBeatLength] = useState<number | undefined>();
+  const [barCount, setBarCount] = useState<number | undefined>();
   const [modalOpen, setModalOpen] = useState(false);
+  const [isExample, setIsExample] = useState(false);
   const [processStatus, setProcessStatus] = useState(ProcessStatus.Idle);
   const [duration, setDuration] = useState<number | undefined>();
   const [message, setMessage] = useState<React.ReactNode | string>("Click Start to transcode");
@@ -28,6 +31,7 @@ export default function Home() {
   }
 
   async function onRequestExample() {
+    setIsExample(true);
     setProcessStatus(ProcessStatus.Processing);
     const sample = pickRandom([
       { beatLength: 0.348837875, barCount: 2, src: "./dl.wav" },
@@ -38,7 +42,9 @@ export default function Home() {
       { beatLength: 0.342857125, barCount: 2, src: "./dl6.wav" },
     ]);
     console.log(sample);
-    processUploadedFile(sample);
+    setUploadedSrc(sample.src)
+    setBeatLength(sample.beatLength);
+    setBarCount(sample.barCount);
   }
 
   async function download(filename: string) {
@@ -54,6 +60,7 @@ export default function Home() {
   }
 
   function onBeforeUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    setIsExample(false);
     const file = e.target?.files?.[0];
     if (file) {
       setProcessStatus(ProcessStatus.Processing);
@@ -69,16 +76,13 @@ export default function Home() {
     }
   }
 
-  async function processUploadedFile({
-    beatLength,
-    barCount,
-    src,
-  }: {
-    beatLength: number;
-    barCount: number;
-    src: string | undefined;
-  }) {
-    if (!src) return;
+  function retry() {
+    setProcessStatus(ProcessStatus.Processing);
+    processUploadedFile(uploadedSrc);
+  }
+
+  async function processUploadedFile(src: string | undefined) {
+    if (!src || !beatLength || !barCount) return;
     setMessage("Loading ffmpeg-core.js");
     if (typeof SharedArrayBuffer === "undefined") {
       setMessage(
@@ -115,6 +119,13 @@ export default function Home() {
     console.log(typeof SharedArrayBuffer);
   }, []);
 
+  useEffect(() => {
+    if (beatLength && barCount) {
+      setProcessStatus(ProcessStatus.Processing);
+      processUploadedFile(uploadedSrc);
+    }
+  }, [beatLength, barCount]);
+
   return (
     <div>
       <Header link="about" />
@@ -127,10 +138,19 @@ export default function Home() {
         <div className="flex flex-col items-center mx-4 md:mx-0">
           <div className="flex flex-row items-center h-32 my-8">
             {processStatus === ProcessStatus.Idle && (
-              <label className="block text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-64">
-                <input type="file" className="hidden" onChange={onBeforeUpload} key={uploadedSrc} />
-                Upload a WAV file
-              </label>
+              <div className="flex flex-col items-center">
+                <label className="block text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-64 mb-5">
+                  <input type="file" className="hidden" onChange={onBeforeUpload} key={uploadedSrc} />
+                  Upload a WAV file
+                </label>
+
+                <div>
+                  Don&apos;t know where to start?{" "}
+                  <button onClick={onRequestExample} className="text-blue-600 hover:underline">
+                    Try an example!
+                  </button>
+                </div>
+              </div>
             )}
             {processStatus === ProcessStatus.Processing && (
               <div className="flex flex-row items-center">
@@ -186,22 +206,37 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="text-center">
+                  {uploadedSrc && (
+                    <div>
+                      <button
+                        className="mt-4 text-sm mx-auto text-blue-600 hover:underline"
+                        onClick={() => retry()}
+                      >
+                        🔁 Retry with same file
+                      </button>
+                      <br />
+                    </div>
+                  )}
+                  {!isExample && uploadedSrc && duration && (
+                    <div>
+                      <button
+                        className="mt-4 text-sm mx-auto text-blue-600 hover:underline"
+                        onClick={() => {setModalOpen(true)}}
+                      >
+                        ⚙️ Change parameters
+                      </button>
+                      <br />
+                    </div>
+                  )}
                   <button
                     className="mt-4 text-sm mx-auto text-blue-600 hover:underline"
                     onClick={() => setProcessStatus(ProcessStatus.Idle)}
                   >
-                    Restart, upload a new file
+                    🔙 Restart, upload a new file
                   </button>
                 </div>
               </div>
             )}
-          </div>
-
-          <div>
-            Don&apos;t know where to start?{" "}
-            <button onClick={onRequestExample} className="text-blue-600 hover:underline">
-              Try an example!
-            </button>
           </div>
 
           <div className="mt-16 text-xs text-gray-700 max-w-lg">
@@ -244,7 +279,7 @@ export default function Home() {
 
         <audio className="hidden" id="hidden-audio-for-duration" src={uploadedSrc}></audio>
       </div>
-      {modalOpen && duration ? (
+      {!isExample && modalOpen && duration ? (
         <BpmOrBarsSelector
           duration={duration}
           onCancel={() => {
@@ -254,7 +289,8 @@ export default function Home() {
           }}
           onConfirm={(beatLength, barCount) => {
             setModalOpen(false);
-            processUploadedFile({ beatLength, barCount, src: uploadedSrc });
+            setBeatLength(beatLength);
+            setBarCount(barCount);
           }}
         />
       ) : null}
